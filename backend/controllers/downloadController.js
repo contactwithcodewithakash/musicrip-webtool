@@ -73,7 +73,11 @@ const getInfo = (ytDlpPath, url) => {
     child.on('close', (code) => {
       if (code !== 0) {
         console.error(`[Info Fetch] Failed with exit code ${code}. Error: ${errorData}`);
-        return reject(new Error('Failed to retrieve video metadata. Make sure the URL is valid and public.'));
+        const errMsg = errorData.trim();
+        if (errMsg.includes('Sign in to confirm you are not a bot')) {
+          return reject(new Error('YouTube is blocking this request. Please try an Instagram link, or try again later.'));
+        }
+        return reject(new Error(`Failed to retrieve video metadata: ${errMsg || 'Exit code ' + code}`));
       }
 
       try {

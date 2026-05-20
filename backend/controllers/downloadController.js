@@ -62,9 +62,29 @@ const getInfo = (ytDlpPath, url) => {
 
     // Check if cookies.txt is present in the backend directory to bypass bot detection/rate limits
     const cookiesPath = path.join(__dirname, '../cookies.txt');
-    if (fs.existsSync(cookiesPath)) {
+    let cookiesExist = fs.existsSync(cookiesPath);
+    let cookiesDebugInfo = `cookies.txt exists: ${cookiesExist}`;
+    
+    if (cookiesExist) {
       args.push('--cookies', cookiesPath);
       console.log('[Info Fetch] Using cookies.txt for authentication.');
+    } else {
+      // Check for common Windows rename issue: cookies.txt.txt
+      const doubleTxtPath = path.join(__dirname, '../cookies.txt.txt');
+      if (fs.existsSync(doubleTxtPath)) {
+        args.push('--cookies', doubleTxtPath);
+        cookiesExist = true;
+        cookiesDebugInfo = 'Found cookies.txt.txt and using it!';
+        console.log('[Info Fetch] Using cookies.txt.txt for authentication.');
+      } else {
+        // List backend folder contents to help identify incorrect naming
+        try {
+          const files = fs.readdirSync(path.join(__dirname, '..'));
+          cookiesDebugInfo += `. Files in backend: [${files.filter(f => !f.startsWith('.')).join(', ')}]`;
+        } catch (e) {
+          cookiesDebugInfo += `. Error listing backend: ${e.message}`;
+        }
+      }
     }
 
     // Add user-agent header to look more like a standard browser request
@@ -88,10 +108,11 @@ const getInfo = (ytDlpPath, url) => {
       if (code !== 0) {
         console.error(`[Info Fetch] Failed with exit code ${code}. Error: ${errorData}`);
         const errMsg = errorData.trim();
+        const debugSuffix = `[Server Debug: ${cookiesDebugInfo}]`;
         if (errMsg.includes('Sign in to confirm you are not a bot')) {
-          return reject(new Error('YouTube is blocking this request. Please try an Instagram link, or try again later.'));
+          return reject(new Error(`YouTube is blocking this request. ${debugSuffix}`));
         }
-        return reject(new Error(`Failed to retrieve video metadata: ${errMsg || 'Exit code ' + code}`));
+        return reject(new Error(`Failed to retrieve video metadata: ${errMsg || 'Exit code ' + code} ${debugSuffix}`));
       }
 
       try {

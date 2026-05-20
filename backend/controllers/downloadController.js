@@ -55,6 +55,7 @@ const getInfo = (ytDlpPath, url) => {
     console.log(`[Info Fetch] Spawning yt-dlp to dump json for URL: ${url}`);
     
     const args = [
+      '--no-config',
       '--dump-json',
       '--no-playlist',
       '--no-warnings'
@@ -161,6 +162,7 @@ const processDownloadStream = (ytDlpPath, ffmpegPath, downloadId, session, res) 
   const args = [];
 
   // Common options
+  args.push('--no-config');
   args.push('--no-playlist');
   args.push('--no-warnings');
   args.push('--ffmpeg-location', ffmpegPath);

@@ -54,13 +54,27 @@ const getInfo = (ytDlpPath, url) => {
 
     console.log(`[Info Fetch] Spawning yt-dlp to dump json for URL: ${url}`);
     
-    // Use spawn with argument array to prevent command injection
-    const child = spawn(ytDlpPath, [
+    const args = [
       '--dump-json',
       '--no-playlist',
-      '--no-warnings',
-      url
-    ]);
+      '--no-warnings'
+    ];
+
+    // Check if cookies.txt is present in the backend directory to bypass bot detection/rate limits
+    const cookiesPath = path.join(__dirname, '../cookies.txt');
+    if (fs.existsSync(cookiesPath)) {
+      args.push('--cookies', cookiesPath);
+      console.log('[Info Fetch] Using cookies.txt for authentication.');
+    }
+
+    // Add user-agent header to look more like a standard browser request
+    args.push('--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36');
+    args.push('--referer', 'https://www.google.com/');
+
+    args.push(url);
+
+    // Use spawn with argument array to prevent command injection
+    const child = spawn(ytDlpPath, args);
 
     child.stdout.on('data', (data) => {
       outputData += data.toString();
@@ -130,6 +144,17 @@ const processDownloadStream = (ytDlpPath, ffmpegPath, downloadId, session, res) 
   args.push('--no-warnings');
   args.push('--ffmpeg-location', ffmpegPath);
   args.push('--newline'); // Print progress on new lines for easy reading
+
+  // Check if cookies.txt is present in the backend directory to bypass bot detection/rate limits
+  const cookiesPath = path.join(__dirname, '../cookies.txt');
+  if (fs.existsSync(cookiesPath)) {
+    args.push('--cookies', cookiesPath);
+    console.log('[Download Process] Using cookies.txt for authentication.');
+  }
+
+  // Add user-agent header to look more like a standard browser request
+  args.push('--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36');
+  args.push('--referer', 'https://www.google.com/');
 
   // Enforce server-side file size download safety limit
   const maxFileSizeMb = process.env.MAX_FILE_SIZE_MB || '150';

@@ -1,0 +1,20 @@
+# Dependency directories
+node_modules/
+
+# Local binaries downloaded at runtime (yt-dlp binaries)
+backend/bin/
+
+# Temporary downloads and cached media files
+backend/downloads/
+
+# Environment variables containing sensitive ports or limits
+.env
+
+# System / OS files
+.DS_Store
+Thumbs.db
+Thumbs.db:encrypt
+
+# Large archive packages
+*.zip
+*.tar.gz

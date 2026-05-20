@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Meta Tags -->
+  <title>MusicRip - Download Instagram & YouTube MP3/MP4 Instantly</title>
+  <meta name="description" content="Download high-quality MP3 audio and MP4 videos from YouTube, Instagram Reels, Shorts, and Posts. No registration required. Fast, free, and premium.">
+  <meta name="keywords" content="Instagram MP3 downloader, YouTube MP3 downloader, Reel downloader, Download reel audio, YouTube to MP3, MP4 downloader">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://musicrip.ai/">
+  <meta property="og:title" content="MusicRip - Instagram & YouTube Downloader">
+  <meta property="og:description" content="Download high-quality MP3 audio and MP4 videos from YouTube and Instagram. Fast, free, and premium.">
+  <meta property="og:image" content="/assets/images/og-image.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="MusicRip - Instagram & YouTube Downloader">
+  <meta property="twitter:description" content="Download high-quality MP3 audio and MP4 videos from YouTube and Instagram. Fast, free, and premium.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Toastify JS CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.0.7">
+</head>
+<body>
+
+  <!-- Ambient Glow Effects -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <i data-lucide="zap"></i>
+        </div>
+        <span>Music<span class="logo-accent">Rip</span></span>
+      </a>
+      <nav class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#history-section" id="nav-history">History</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="header-actions">
+        <span class="badge-premium"><i data-lucide="sparkles"></i> High Speed Mode</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-container">
+      <h1 class="hero-title">
+        Download <span class="gradient-text">Instagram & YouTube</span> Media Instantly
+      </h1>
+      <p class="hero-subtitle">
+        Rip high-quality MP3 audio or MP4 videos from Reels, Shorts, and Videos in seconds.
+      </p>
+
+      <!-- URL Input System -->
+      <div class="url-input-wrapper">
+        <div class="url-input-container">
+          <i data-lucide="link" class="input-icon"></i>
+          <input type="text" id="url-input" placeholder="Paste Instagram Reel, YouTube link here..." autocomplete="off">
+          <button id="btn-paste" class="btn-secondary" title="Paste from clipboard">
+            <i data-lucide="clipboard"></i> <span>Paste</span>
+          </button>
+          <button id="btn-submit" class="btn-primary">
+            <span>Analyze</span> <i data-lucide="arrow-right"></i>
+          </button>
+        </div>
+        <p class="input-hint">Supports: YouTube, YouTube Shorts, Instagram Reels, Posts, and Videos</p>
+      </div>
+
+      <!-- Supported Platforms -->
+      <div class="platforms-badges">
+        <div class="platform-badge youtube"><i data-lucide="youtube"></i> YouTube</div>
+        <div class="platform-badge instagram"><i data-lucide="instagram"></i> Instagram</div>
+        <div class="platform-badge play"><i data-lucide="play"></i> Shorts</div>
+        <div class="platform-badge film"><i data-lucide="film"></i> Reels</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dynamic Content Area -->
+  <section class="downloader-section" id="download-workspace">
+    <div class="workspace-container">
+      
+      <!-- Skeleton Loading State (Initially Hidden) -->
+      <div class="skeleton-card glass-panel hidden" id="metadata-skeleton">
+        <div class="skeleton-thumbnail"></div>
+        <div class="skeleton-details">
+          <div class="skeleton-line line-title"></div>
+          <div class="skeleton-line line-uploader"></div>
+          <div class="skeleton-line line-duration"></div>
+          <div class="skeleton-line line-options"></div>
+          <div class="skeleton-line line-btn"></div>
+        </div>
+      </div>
+
+      <!-- Media Preview Card (Initially Hidden) -->
+      <div class="preview-card glass-panel hidden" id="media-preview-card">
+        <div class="preview-thumbnail-container">
+          <img src="" alt="Thumbnail" id="preview-thumbnail" class="preview-thumbnail">
+          <div class="duration-badge" id="preview-duration">00:00</div>
+          <div class="platform-floating-badge" id="preview-platform-badge">
+            <i data-lucide="youtube"></i>
+          </div>
+        </div>
+        <div class="preview-details">
+          <h3 class="preview-title" id="preview-title">Video/Reel Title Loading...</h3>
+          <p class="preview-uploader"><i data-lucide="user" class="inline-icon"></i> <span id="preview-uploader">Creator</span></p>
+          
+          <!-- Format Selector Tabs -->
+          <div class="format-tabs">
+            <button class="format-tab active" data-format="mp3">
+              <i data-lucide="music"></i> Audio (MP3)
+            </button>
+            <button class="format-tab" data-format="mp4">
+              <i data-lucide="video"></i> Video (MP4)
+            </button>
+          </div>
+
+          <!-- Quality Dropdown -->
+          <div class="quality-selector">
+            <label for="quality-select">Select Download Quality:</label>
+            <div class="select-wrapper">
+              <select id="quality-select">
+                <!-- Will be dynamically populated based on active format tab -->
+                <option value="320">320 kbps (Premium Audio Quality)</option>
+                <option value="192">192 kbps (Standard Quality)</option>
+                <option value="128">128 kbps (Eco Quality)</option>
+              </select>
+              <i data-lucide="chevron-down" class="select-arrow"></i>
+            </div>
+          </div>
+
+          <button id="btn-download-start" class="btn-primary btn-full-width">
+            <i data-lucide="download"></i> <span>Generate Download Link</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Download Progress Card (Initially Hidden) -->
+      <div class="progress-card glass-panel hidden" id="download-progress-card">
+        <div class="progress-icon-wrapper">
+          <div class="progress-spinner"></div>
+          <div class="progress-percentage-center" id="progress-percent-center">0%</div>
+        </div>
+        <div class="progress-details">
+          <h3 class="progress-title" id="progress-work-title">Extracting Audio stream...</h3>
+          
+          <!-- Progress Bar -->
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+          </div>
+          
+          <!-- Progress Stats Grid -->
+          <div class="progress-stats">
+            <div class="stat-item">
+              <span class="stat-label">Progress:</span>
+              <span class="stat-value" id="progress-percent">0%</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Speed:</span>
+              <span class="stat-value" id="progress-speed">0 MB/s</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">ETA:</span>
+              <span class="stat-value" id="progress-eta">--:--</span>
+            </div>
+          </div>
+
+          <p class="status-message" id="progress-status-message">Connecting to stream downloader...</p>
+          
+          <button id="btn-cancel-download" class="btn-outline-danger">
+            <i data-lucide="x-circle"></i> Cancel Download
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Download History Section -->
+  <section class="history-section hidden" id="history-section">
+    <div class="section-container">
+      <div class="section-header">
+        <h2 class="section-title"><i data-lucide="history" class="inline-icon"></i> Download History</h2>
+        <button id="btn-clear-history" class="btn-link"><i data-lucide="trash-2"></i> Clear History</button>
+      </div>
+      <div class="history-list" id="history-list">
+        <!-- Dynamically filled by history.js -->
+        <div class="empty-history">
+          <i data-lucide="folder-open"></i>
+          <p>No downloads recorded yet. Start downloading to log your history!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" id="features">
+    <div class="section-container">
+      <h2 class="section-title text-center">Engineered for Creators</h2>
+      <p class="section-subtitle text-center">Fast, convenient, and optimized media converter for any device.</p>
+      
+      <div class="features-grid">
+        <div class="feature-card glass-panel">
+          <div class="feature-icon"><i data-lucide="zap"></i></div>
+          <h3 class="feature-card-title">Lightning Speeds</h3>
+          <p class="feature-card-desc">High speed backend conversion that process download pipelines in milliseconds.</p>
+        </div>
+        <div class="feature-card glass-panel">
+          <div class="feature-icon"><i data-lucide="music-4"></i></div>
+          <h3 class="feature-card-title">HQ MP3 Ripping</h3>
+          <p class="feature-card-desc">Extract raw audio tracks and transcode them up to 320kbps for crystal-clear acoustics.</p>
+        </div>
+        <div class="feature-card glass-panel">
+          <div class="feature-icon"><i data-lucide="monitor"></i></div>
+          <h3 class="feature-card-title">HD 1080p Support</h3>
+          <p class="feature-card-desc">Download complete MP4 video clips up to full HD, merging audio and video tracks automatically.</p>
+        </div>
+        <div class="feature-card glass-panel">
+          <div class="feature-icon"><i data-lucide="shield-check"></i></div>
+          <h3 class="feature-card-title">Privacy Focused</h3>
+          <p class="feature-card-desc">No accounts, no email requirements. Complete file cleaning keeps downloads private.</p>
+        </div>
+        <div class="feature-card glass-panel">
+          <div class="feature-icon"><i data-lucide="tablet"></i></div>
+          <h3 class="feature-card-title">Mobile Friendly</h3>
+          <p class="feature-card-desc">Engineered for mobile browsers. Download and save files directly to iOS and Android.</p>
+        </div>
+        <div class="feature-card glass-panel">
+          <div class="feature-icon"><i data-lucide="infinity"></i></div>
+          <h3 class="feature-card-title">Unlimited Rips</h3>
+          <p class="feature-card-desc">Free converting pipelines with no bandwidth limits or hidden daily caps.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works-section" id="how-it-works">
+    <div class="section-container">
+      <h2 class="section-title text-center">3 Simple Steps</h2>
+      
+      <div class="steps-container">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <h3 class="step-title">Paste URL</h3>
+          <p class="step-desc">Copy your favorite YouTube or Instagram video link and paste it into the analyzer search field above.</p>
+        </div>
+        <div class="step-arrow"><i data-lucide="arrow-right"></i></div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <h3 class="step-title">Choose Output</h3>
+          <p class="step-desc">Select between MP3 audio or MP4 video format and configure the preferred compression size.</p>
+        </div>
+        <div class="step-arrow"><i data-lucide="arrow-right"></i></div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <h3 class="step-title">Download File</h3>
+          <p class="step-desc">Watch our engine fetch, download, and compile your clip. Save the final file locally in one tap.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section" id="faq">
+    <div class="section-container max-w-3xl">
+      <h2 class="section-title text-center">Frequently Asked Questions</h2>
+      
+      <div class="faq-accordion">
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Is MusicRip free to use?</span>
+            <i data-lucide="chevron-down" class="faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Yes, MusicRip is completely free to use. You can download unlimited audio and video clips without paying anything or registering an account.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Does it support Instagram Reels and Posts?</span>
+            <i data-lucide="chevron-down" class="faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Absolutely! You can paste any Instagram Reel, Post, or Video link. The site will analyze it and let you download either the full MP4 video or extract the audio to MP3.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Can I extract MP3 audio files from YouTube?</span>
+            <i data-lucide="chevron-down" class="faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Yes! Our tool supports extracting high-quality audio streams from YouTube videos and converting them to MP3 files at 128kbps, 192kbps, or 320kbps.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Is there a download speed limit?</span>
+            <i data-lucide="chevron-down" class="faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            <p>No, we do not limit download speeds. Files are converted at the maximum speed supported by our server pipelines and streamed directly back to you.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Do my downloaded files stay on the server?</span>
+            <i data-lucide="chevron-down" class="faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            <p>No. We prioritize your privacy. All downloaded and temporary files are automatically deleted immediately after you download them, or after 30 minutes if left unclaimed on the server.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-brand">
+        <a href="/" class="logo">
+          <div class="logo-icon"><i data-lucide="zap"></i></div>
+          <span>Music<span class="logo-accent">Rip</span></span>
+        </a>
+        <p class="footer-desc">Premium, lightning-fast downloader for content creators and video editors.</p>
+      </div>
+      <div class="footer-links-grid">
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="/terms.html">Terms of Service</a>
+          <a href="/privacy.html">Privacy Policy</a>
+          <a href="/dmca.html">DMCA Policy</a>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="#features">Features</a>
+          <a href="#how-it-works">How It Works</a>
+          <a href="#faq">FAQ</a>
+        </div>
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <a href="#url-input">YouTube Downloader</a>
+          <a href="#url-input">Instagram Downloader</a>
+          <a href="#url-input">Reels MP3 Converter</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 MusicRip. Developed for educational and personal use only. Users are responsible for complying with terms of third-party platforms.</p>
+    </div>
+  </footer>
+
+  <!-- GSAP Animation Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Toastify JS -->
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+  <!-- Modular Frontend Scripts -->
+  <script type="module" src="/assets/js/api.js?v=1.0.6"></script>
+  <script type="module" src="/assets/js/history.js?v=1.0.6"></script>
+  <script type="module" src="/assets/js/ui.js?v=1.0.6"></script>
+</body>
+</html>

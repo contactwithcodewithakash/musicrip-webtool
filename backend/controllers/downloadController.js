@@ -64,7 +64,16 @@ const getInfo = (ytDlpPath, url) => {
     // Check if cookies.txt is present in the backend directory to bypass bot detection/rate limits
     const cookiesPath = path.join(__dirname, '../cookies.txt');
     let cookiesExist = fs.existsSync(cookiesPath);
-    let cookiesDebugInfo = `cookies.txt exists: ${cookiesExist}`;
+    
+    let ytDlpVersion = 'unknown';
+    try {
+      const { execSync } = require('child_process');
+      ytDlpVersion = execSync(`"${ytDlpPath}" --version`).toString().trim();
+    } catch (e) {
+      ytDlpVersion = 'error: ' + e.message;
+    }
+
+    let cookiesDebugInfo = `cookies.txt exists: ${cookiesExist}, path: ${ytDlpPath}, version: ${ytDlpVersion}`;
     
     if (cookiesExist) {
       args.push('--cookies', cookiesPath);
@@ -75,7 +84,7 @@ const getInfo = (ytDlpPath, url) => {
       if (fs.existsSync(doubleTxtPath)) {
         args.push('--cookies', doubleTxtPath);
         cookiesExist = true;
-        cookiesDebugInfo = 'Found cookies.txt.txt and using it!';
+        cookiesDebugInfo = `Found cookies.txt.txt and using it! [path: ${ytDlpPath}, version: ${ytDlpVersion}]`;
         console.log('[Info Fetch] Using cookies.txt.txt for authentication.');
       } else {
         // List backend folder contents to help identify incorrect naming

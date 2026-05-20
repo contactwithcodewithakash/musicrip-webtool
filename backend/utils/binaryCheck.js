@@ -94,17 +94,12 @@ const initBinaries = async () => {
   let ytDlpPath = '';
   const localYtDlp = path.join(BIN_DIR, getYtDlpFilename());
 
-  // 1. Check if yt-dlp is in system PATH
-  if (isCommandAvailable('yt-dlp')) {
-    ytDlpPath = 'yt-dlp';
-    console.log('[Binary Check] yt-dlp is available in the system PATH');
-  } 
-  // 2. Check if yt-dlp is present locally
-  else if (fs.existsSync(localYtDlp)) {
+  // 1. Check if yt-dlp is present locally
+  if (fs.existsSync(localYtDlp)) {
     ytDlpPath = localYtDlp;
     console.log(`[Binary Check] yt-dlp is available locally at: ${ytDlpPath}`);
   } 
-  // 3. Download yt-dlp locally
+  // 2. Download yt-dlp locally
   else {
     const downloadUrl = getYTdlpDownloadUrl();
     console.log(`[Binary Check] yt-dlp not found in PATH or locally. Downloading from: ${downloadUrl}`);

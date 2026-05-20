@@ -5,7 +5,7 @@
 // If you are hosting the frontend on Hostinger Shared Hosting, 
 // enter your backend URL here (e.g., 'https://musicrip-backend.onrender.com').
 // Keep it empty '' if hosting frontend and backend on the same server.
-export const API_BASE_URL = '';
+export const API_BASE_URL = 'https://musicrip-webtool.onrender.com';
 window.API_BASE_URL = API_BASE_URL;
 
 // Fetch video metadata

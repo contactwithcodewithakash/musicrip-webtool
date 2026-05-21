@@ -61,8 +61,24 @@ const getInfo = (ytDlpPath, url) => {
       '--no-warnings'
     ];
 
-    // Check if cookies.txt is present in the backend directory to bypass bot detection/rate limits
-    const cookiesPath = path.join(__dirname, '../cookies.txt');
+    // Detect which specific cookies file to use
+    let cookiesPath = path.join(__dirname, '../cookies.txt');
+    let cookiesType = 'cookies.txt';
+
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+      const ytCookies = path.join(__dirname, '../youtube_cookies.txt');
+      if (fs.existsSync(ytCookies)) {
+        cookiesPath = ytCookies;
+        cookiesType = 'youtube_cookies.txt';
+      }
+    } else if (url.includes('instagram.com')) {
+      const igCookies = path.join(__dirname, '../instagram_cookies.txt');
+      if (fs.existsSync(igCookies)) {
+        cookiesPath = igCookies;
+        cookiesType = 'instagram_cookies.txt';
+      }
+    }
+
     let cookiesExist = fs.existsSync(cookiesPath);
     
     let ytDlpVersion = 'unknown';
@@ -73,19 +89,29 @@ const getInfo = (ytDlpPath, url) => {
       ytDlpVersion = 'error: ' + e.message;
     }
 
-    let cookiesDebugInfo = `cookies.txt exists: ${cookiesExist}, path: ${ytDlpPath}, version: ${ytDlpVersion}`;
+    let cookiesDebugInfo = `cookies: ${cookiesExist ? 'LOADED (' + cookiesType + ')' : 'NOT FOUND'}, path: ${ytDlpPath}, version: ${ytDlpVersion}`;
     
     if (cookiesExist) {
       args.push('--cookies', cookiesPath);
-      console.log('[Info Fetch] Using cookies.txt for authentication.');
+      console.log(`[Info Fetch] Using ${cookiesType} for authentication.`);
     } else {
       // Check for common Windows rename issue: cookies.txt.txt
       const doubleTxtPath = path.join(__dirname, '../cookies.txt.txt');
+      const doubleYtTxtPath = path.join(__dirname, '../youtube_cookies.txt.txt');
+      const doubleIgTxtPath = path.join(__dirname, '../instagram_cookies.txt.txt');
+
       if (fs.existsSync(doubleTxtPath)) {
         args.push('--cookies', doubleTxtPath);
         cookiesExist = true;
         cookiesDebugInfo = `Found cookies.txt.txt and using it! [path: ${ytDlpPath}, version: ${ytDlpVersion}]`;
-        console.log('[Info Fetch] Using cookies.txt.txt for authentication.');
+      } else if (fs.existsSync(doubleYtTxtPath)) {
+        args.push('--cookies', doubleYtTxtPath);
+        cookiesExist = true;
+        cookiesDebugInfo = `Found youtube_cookies.txt.txt and using it! [path: ${ytDlpPath}, version: ${ytDlpVersion}]`;
+      } else if (fs.existsSync(doubleIgTxtPath)) {
+        args.push('--cookies', doubleIgTxtPath);
+        cookiesExist = true;
+        cookiesDebugInfo = `Found instagram_cookies.txt.txt and using it! [path: ${ytDlpPath}, version: ${ytDlpVersion}]`;
       } else {
         // List backend folder contents to help identify incorrect naming
         try {
@@ -177,11 +203,41 @@ const processDownloadStream = (ytDlpPath, ffmpegPath, downloadId, session, res) 
   args.push('--ffmpeg-location', ffmpegPath);
   args.push('--newline'); // Print progress on new lines for easy reading
 
-  // Check if cookies.txt is present in the backend directory to bypass bot detection/rate limits
-  const cookiesPath = path.join(__dirname, '../cookies.txt');
+  // Detect which specific cookies file to use
+  let cookiesPath = path.join(__dirname, '../cookies.txt');
+  let cookiesType = 'cookies.txt';
+
+  if (url.includes('youtube.com') || url.includes('youtu.be')) {
+    const ytCookies = path.join(__dirname, '../youtube_cookies.txt');
+    if (fs.existsSync(ytCookies)) {
+      cookiesPath = ytCookies;
+      cookiesType = 'youtube_cookies.txt';
+    }
+  } else if (url.includes('instagram.com')) {
+    const igCookies = path.join(__dirname, '../instagram_cookies.txt');
+    if (fs.existsSync(igCookies)) {
+      cookiesPath = igCookies;
+      cookiesType = 'instagram_cookies.txt';
+    }
+  }
+
+  // Check if cookies file exists and apply it
   if (fs.existsSync(cookiesPath)) {
     args.push('--cookies', cookiesPath);
-    console.log('[Download Process] Using cookies.txt for authentication.');
+    console.log(`[Download Process] Using ${cookiesType} for authentication.`);
+  } else {
+    // Check for double .txt extensions
+    const doubleTxtPath = path.join(__dirname, '../cookies.txt.txt');
+    const doubleYtTxtPath = path.join(__dirname, '../youtube_cookies.txt.txt');
+    const doubleIgTxtPath = path.join(__dirname, '../instagram_cookies.txt.txt');
+
+    if (fs.existsSync(doubleTxtPath)) {
+      args.push('--cookies', doubleTxtPath);
+    } else if (fs.existsSync(doubleYtTxtPath)) {
+      args.push('--cookies', doubleYtTxtPath);
+    } else if (fs.existsSync(doubleIgTxtPath)) {
+      args.push('--cookies', doubleIgTxtPath);
+    }
   }
 
   // Add user-agent header to look more like a standard browser request

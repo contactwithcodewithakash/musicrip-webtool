@@ -185,4 +185,46 @@ router.get('/files/download/:id', (req, res) => {
   });
 });
 
+// Route: Diagnose YouTube issues
+router.get('/diagnose-yt', (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).json({ error: 'URL parameter is required.' });
+
+  const { exec } = require('child_process');
+  const ytDlpPath = process.env.YT_DLP_PATH;
+  const ffmpegPath = process.env.FFMPEG_PATH;
+
+  const cookiesPath = path.join(__dirname, '../youtube_cookies.txt');
+  const cookiesExist = fs.existsSync(cookiesPath);
+  
+  let cmd = `"${ytDlpPath}" -v -F`;
+  
+  // Add cookies if present
+  if (cookiesExist) {
+    cmd += ` --cookies "${cookiesPath}"`;
+  } else {
+    // Fall back to cookies.txt
+    const genericCookies = path.join(__dirname, '../cookies.txt');
+    if (fs.existsSync(genericCookies)) {
+      cmd += ` --cookies "${genericCookies}"`;
+    }
+  }
+
+  cmd += ` --no-config "${url}"`;
+  
+  console.log(`[Diagnostic] Executing command: ${cmd}`);
+
+  exec(cmd, (error, stdout, stderr) => {
+    res.json({
+      success: !error,
+      command: cmd,
+      cookiesExist,
+      ffmpegPath,
+      exitCode: error ? error.code : 0,
+      stdout: stdout.toString(),
+      stderr: stderr.toString()
+    });
+  });
+});
+
 module.exports = router;

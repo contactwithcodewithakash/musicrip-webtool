@@ -419,6 +419,65 @@ btnClearHistory.addEventListener('click', () => {
     showToast('History cleared!', 'info');
   }
 });
+// Mobile navigation menu handler
+const initMobileMenu = () => {
+  const hamburgerBtn = document.getElementById('hamburger-btn');
+  const mobileNavDrawer = document.getElementById('mobile-nav-drawer');
+  const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+  if (!hamburgerBtn || !mobileNavDrawer) return;
+
+  hamburgerBtn.addEventListener('click', () => {
+    const isOpen = mobileNavDrawer.classList.contains('open');
+    const icon = hamburgerBtn.querySelector('i');
+
+    if (!isOpen) {
+      // Open drawer
+      mobileNavDrawer.classList.add('open');
+      hamburgerBtn.classList.add('active');
+      if (icon) {
+        icon.setAttribute('data-lucide', 'x');
+        if (window.lucide) window.lucide.createIcons();
+      }
+    } else {
+      // Close drawer
+      mobileNavDrawer.classList.remove('open');
+      hamburgerBtn.classList.remove('active');
+      if (icon) {
+        icon.setAttribute('data-lucide', 'menu');
+        if (window.lucide) window.lucide.createIcons();
+      }
+    }
+  });
+
+  // Close menu when clicking on any link
+  mobileNavLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      mobileNavDrawer.classList.remove('open');
+      hamburgerBtn.classList.remove('active');
+      const icon = hamburgerBtn.querySelector('i');
+      if (icon) {
+        icon.setAttribute('data-lucide', 'menu');
+        if (window.lucide) window.lucide.createIcons();
+      }
+    });
+  });
+
+  // Close menu when clicking outside of drawer
+  document.addEventListener('click', (e) => {
+    if (mobileNavDrawer.classList.contains('open') &&
+        !mobileNavDrawer.contains(e.target) &&
+        !hamburgerBtn.contains(e.target)) {
+      mobileNavDrawer.classList.remove('open');
+      hamburgerBtn.classList.remove('active');
+      const icon = hamburgerBtn.querySelector('i');
+      if (icon) {
+        icon.setAttribute('data-lucide', 'menu');
+        if (window.lucide) window.lucide.createIcons();
+      }
+    }
+  });
+};
 
 /* ==========================================================================
    Initialization on Load
@@ -430,6 +489,9 @@ const initApp = () => {
 
   // Setup FAQ accordions
   initFAQ();
+
+  // Initialize mobile menu
+  initMobileMenu();
 
   // Set up header / hero entry GSAP animations
   if (window.gsap) {

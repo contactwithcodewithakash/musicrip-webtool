@@ -210,7 +210,7 @@ router.get('/diagnose-yt', (req, res) => {
     }
   }
 
-  cmd += ` --no-config "${url}"`;
+  cmd += ` --js-runtimes "node:${process.argv[0]}" --remote-components "ejs:github" --no-config "${url}"`;
   
   console.log(`[Diagnostic] Executing command: ${cmd}`);
 

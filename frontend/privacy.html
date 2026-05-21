@@ -57,8 +57,24 @@
       <div class="header-actions">
         <a href="index.html" class="btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;"><i data-lucide="arrow-left"></i> Back to Ripper</a>
       </div>
+      <button class="hamburger-menu" id="hamburger-btn" aria-label="Toggle menu">
+        <i data-lucide="menu"></i>
+      </button>
     </div>
   </header>
+
+  <!-- Mobile Navigation Menu Drawer -->
+  <div class="mobile-nav-drawer" id="mobile-nav-drawer">
+    <div class="mobile-nav-content">
+      <a href="index.html" class="mobile-nav-link"><i data-lucide="home"></i> Home</a>
+      <a href="index.html#features" class="mobile-nav-link"><i data-lucide="sparkles"></i> Features</a>
+      <a href="index.html#faq" class="mobile-nav-link"><i data-lucide="info"></i> FAQ</a>
+      <div class="mobile-nav-divider"></div>
+      <div class="mobile-nav-badge-wrapper" style="width: 100%;">
+        <a href="index.html" class="btn-secondary" style="width: 100%; padding: 8px 16px; font-size: 0.85rem; justify-content: center;"><i data-lucide="arrow-left"></i> Back to Ripper</a>
+      </div>
+    </div>
+  </div>
 
   <main class="legal-content">
     <h1>Privacy Policy</h1>
@@ -120,6 +136,46 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
     if (window.lucide) window.lucide.createIcons();
+
+    // Mobile menu toggling
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const mobileNavDrawer = document.getElementById('mobile-nav-drawer');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+    if (hamburgerBtn && mobileNavDrawer) {
+      hamburgerBtn.addEventListener('click', () => {
+        const isOpen = mobileNavDrawer.classList.contains('open');
+        const icon = hamburgerBtn.querySelector('i');
+
+        if (!isOpen) {
+          mobileNavDrawer.classList.add('open');
+          hamburgerBtn.classList.add('active');
+          if (icon) {
+            icon.setAttribute('data-lucide', 'x');
+            if (window.lucide) window.lucide.createIcons();
+          }
+        } else {
+          mobileNavDrawer.classList.remove('open');
+          hamburgerBtn.classList.remove('active');
+          if (icon) {
+            icon.setAttribute('data-lucide', 'menu');
+            if (window.lucide) window.lucide.createIcons();
+          }
+        }
+      });
+
+      mobileNavLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileNavDrawer.classList.remove('open');
+          hamburgerBtn.classList.remove('active');
+          const icon = hamburgerBtn.querySelector('i');
+          if (icon) {
+            icon.setAttribute('data-lucide', 'menu');
+            if (window.lucide) window.lucide.createIcons();
+          }
+        });
+      });
+    }
   </script>
 </body>
 </html>

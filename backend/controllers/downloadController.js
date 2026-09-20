@@ -60,7 +60,8 @@ const getInfo = (ytDlpPath, url) => {
       '--no-playlist',
       '--no-warnings',
       '--js-runtimes', `node:${process.argv[0]}`,
-      '--remote-components', 'ejs:github'
+      '--remote-components', 'ejs:github',
+      '--extractor-args', 'youtube:player_client=android'
     ];
 
     // Detect which specific cookies file to use
@@ -206,6 +207,7 @@ const processDownloadStream = (ytDlpPath, ffmpegPath, downloadId, session, res) 
   args.push('--newline'); // Print progress on new lines for easy reading
   args.push('--js-runtimes', `node:${process.argv[0]}`);
   args.push('--remote-components', 'ejs:github');
+  args.push('--extractor-args', 'youtube:player_client=android');
 
   // Detect which specific cookies file to use
   let cookiesPath = path.join(__dirname, '../cookies.txt');

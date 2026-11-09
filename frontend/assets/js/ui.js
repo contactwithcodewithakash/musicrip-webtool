@@ -468,10 +468,11 @@ const initApp = () => {
   if (window.gsap) {
     try {
       gsap.from('header', { opacity: 0, y: -10, duration: 0.35, ease: 'power2.out' });
-      gsap.from('.hero-title', { opacity: 0, y: 15, duration: 0.35, ease: 'power2.out' });
-      gsap.from('.hero-subtitle', { opacity: 0, y: 10, duration: 0.3, ease: 'power2.out', delay: 0.05 });
-      gsap.from('.url-input-wrapper', { opacity: 0, y: 10, duration: 0.3, ease: 'power2.out', delay: 0.1 });
-      gsap.from('.platforms-badges', { opacity: 0, duration: 0.25, delay: 0.15 });
+      gsap.from('.hero-pill-badge', { opacity: 0, y: 10, duration: 0.3, ease: 'power2.out' });
+      gsap.from('.hero-title', { opacity: 0, y: 15, duration: 0.35, ease: 'power2.out', delay: 0.05 });
+      gsap.from('.hero-subtitle', { opacity: 0, y: 10, duration: 0.3, ease: 'power2.out', delay: 0.1 });
+      gsap.from('.url-input-wrapper', { opacity: 0, y: 10, duration: 0.3, ease: 'power2.out', delay: 0.15 });
+      gsap.from('.platforms-badges', { opacity: 0, duration: 0.25, delay: 0.2 });
     } catch (e) {
       console.warn('GSAP animation failed, applying fallback opacity:', e);
       document.querySelectorAll('header, .hero-title, .hero-subtitle, .url-input-wrapper, .platforms-badges')

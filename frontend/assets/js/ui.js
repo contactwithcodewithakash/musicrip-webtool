@@ -69,7 +69,7 @@ const showToast = (message, type = 'success') => {
 
   Toastify({
     text: message,
-    duration: 3500,
+    duration: type === 'error' ? 10000 : 3500,
     close: true,
     gravity: 'top',
     position: 'right',

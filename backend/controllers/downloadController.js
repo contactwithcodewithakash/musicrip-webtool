@@ -148,10 +148,10 @@ const getInfo = (ytDlpPath, url) => {
         console.error(`[Info Fetch] Failed with exit code ${code}. Error: ${errorData}`);
         const errMsg = errorData.trim();
         const debugSuffix = `[Server Debug: ${cookiesDebugInfo}]`;
-        if (errMsg.includes('Sign in to confirm you are not a bot')) {
-          return reject(new Error(`YouTube is blocking this request. ${debugSuffix}`));
+        if (errMsg.includes('Sign in to confirm') && errMsg.includes('not a bot')) {
+          return reject(new Error('YouTube Error: Our server IP is blocked (Bot Detection). To fix this: Update "youtube_cookies.txt" with fresh cookies, or configure a Residential Proxy on the backend.'));
         }
-        return reject(new Error(`Failed to retrieve video metadata: ${errMsg || 'Exit code ' + code} ${debugSuffix}`));
+        return reject(new Error(`Failed to retrieve video metadata. Error: ${errMsg.substring(0, 100)}...`));
       }
 
       try {

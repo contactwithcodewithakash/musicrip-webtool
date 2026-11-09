@@ -170,21 +170,18 @@ const analyzeLink = async (url) => {
     activeCancelHelper = null;
   }
 
-  // UI Setup: Hide active cards and show skeleton
-  gsap.to([mediaPreviewCard, downloadProgressCard], {
-    opacity: 0,
-    y: 20,
-    duration: 0.2,
-    onComplete: () => {
-      mediaPreviewCard.classList.add('hidden');
-      downloadProgressCard.classList.add('hidden');
-      
-      metadataSkeleton.classList.remove('hidden');
-      gsap.fromTo(metadataSkeleton, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.3 });
-    }
-  });
+  // 1. Instant Button Feedback for snappy feel
+  btnSubmit.disabled = true;
+  const originalBtnHtml = `<span>Analyze</span> <i data-lucide="arrow-right"></i>`;
+  btnSubmit.innerHTML = `<span class="spinner-small"></span> <span>Analyzing...</span>`;
 
-  // Scroll to workspace smoothly
+  // UI Setup: Fast Snappy Transition to Skeleton
+  mediaPreviewCard.classList.add('hidden');
+  downloadProgressCard.classList.add('hidden');
+  metadataSkeleton.classList.remove('hidden');
+  gsap.fromTo(metadataSkeleton, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.15, ease: 'power2.out' });
+
+  // Scroll to workspace
   document.getElementById('download-workspace').scrollIntoView({ behavior: 'smooth' });
 
   try {
@@ -214,30 +211,20 @@ const analyzeLink = async (url) => {
     // Default Format Option
     setFormatTab('mp3');
 
-    // Fade out skeleton, fade in preview card
-    gsap.to(metadataSkeleton, {
-      opacity: 0,
-      y: -15,
-      duration: 0.25,
-      onComplete: () => {
-        metadataSkeleton.classList.add('hidden');
-        mediaPreviewCard.classList.remove('hidden');
-        gsap.fromTo(mediaPreviewCard, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 });
-      }
-    });
+    // Fast Snappy Fade out skeleton, fade in preview card (0.15s instead of 0.65s delay)
+    metadataSkeleton.classList.add('hidden');
+    mediaPreviewCard.classList.remove('hidden');
+    gsap.fromTo(mediaPreviewCard, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.18, ease: 'power2.out' });
 
     showToast('URL analysis completed!', 'success');
 
   } catch (error) {
-    // Reset layout on error
-    gsap.to(metadataSkeleton, {
-      opacity: 0,
-      duration: 0.2,
-      onComplete: () => {
-        metadataSkeleton.classList.add('hidden');
-      }
-    });
+    metadataSkeleton.classList.add('hidden');
     showToast(error.message || 'Server failed to analyze the link.', 'error');
+  } finally {
+    btnSubmit.disabled = false;
+    btnSubmit.innerHTML = originalBtnHtml;
+    if (window.lucide) window.lucide.createIcons();
   }
 };
 
@@ -279,27 +266,24 @@ btnDownloadStart.addEventListener('click', async () => {
   const quality = qualitySelect.value;
   const title = currentMetadata.title;
 
-  // Transition UI: Hide preview card and show progress card
-  gsap.to(mediaPreviewCard, {
-    opacity: 0,
-    y: -15,
-    duration: 0.25,
-    onComplete: () => {
-      mediaPreviewCard.classList.add('hidden');
-      
-      // Reset progress elements
-      progressPercentCenter.textContent = '0%';
-      progressWorkTitle.textContent = currentFormat === 'mp3' ? 'Extracting audio stream...' : 'Downloading video streams...';
-      progressBarFill.style.width = '0%';
-      progressPercent.textContent = '0%';
-      progressSpeed.textContent = '0 MB/s';
-      progressEta.textContent = '--:--';
-      progressStatusMessage.textContent = 'Contacting downloading pipelines...';
-      
-      downloadProgressCard.classList.remove('hidden');
-      gsap.fromTo(downloadProgressCard, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 });
-    }
-  });
+  btnDownloadStart.disabled = true;
+  const originalDownloadBtnHtml = `<i data-lucide="download"></i> <span>Generate Download Link</span>`;
+  btnDownloadStart.innerHTML = `<span class="spinner-small"></span> <span>Starting...</span>`;
+
+  // Snappy Transition: Hide preview card and show progress card (0.15s)
+  mediaPreviewCard.classList.add('hidden');
+  
+  // Reset progress elements
+  progressPercentCenter.textContent = '0%';
+  progressWorkTitle.textContent = currentFormat === 'mp3' ? 'Extracting audio stream...' : 'Downloading video streams...';
+  progressBarFill.style.width = '0%';
+  progressPercent.textContent = '0%';
+  progressSpeed.textContent = '0 MB/s';
+  progressEta.textContent = '--:--';
+  progressStatusMessage.textContent = 'Contacting downloading pipelines...';
+  
+  downloadProgressCard.classList.remove('hidden');
+  gsap.fromTo(downloadProgressCard, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.18, ease: 'power2.out' });
 
   try {
     // 1. POST request to register download
@@ -325,6 +309,9 @@ btnDownloadStart.addEventListener('click', async () => {
       },
       onComplete: (data) => {
         activeCancelHelper = null;
+        btnDownloadStart.disabled = false;
+        btnDownloadStart.innerHTML = originalDownloadBtnHtml;
+        if (window.lucide) window.lucide.createIcons();
         showToast('Processing complete! Starting download...', 'success');
         
         // Append download item to history
@@ -332,62 +319,46 @@ btnDownloadStart.addEventListener('click', async () => {
         
         // Auto-download file by triggering window redirection to the completed file path
         if (data.downloadUrl) {
-          // Create an invisible hyperlink to download file securely
           const link = document.createElement('a');
           const isAbsolute = data.downloadUrl.startsWith('http://') || data.downloadUrl.startsWith('https://');
           link.href = isAbsolute ? data.downloadUrl : (window.API_BASE_URL || '') + data.downloadUrl;
-          // Trigger download attributes
           link.setAttribute('download', '');
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
         }
 
-        // Return back to preview/input state after brief delay
+        // Return back to preview/input state promptly (1.2s instead of 3.0s delay)
         setTimeout(() => {
-          gsap.to(downloadProgressCard, {
-            opacity: 0,
-            y: -15,
-            duration: 0.25,
-            onComplete: () => {
-              downloadProgressCard.classList.add('hidden');
-              // Bring back preview
-              mediaPreviewCard.classList.remove('hidden');
-              gsap.to(mediaPreviewCard, { opacity: 1, y: 0, duration: 0.3 });
-            }
-          });
-        }, 3000);
+          downloadProgressCard.classList.add('hidden');
+          mediaPreviewCard.classList.remove('hidden');
+          gsap.fromTo(mediaPreviewCard, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.18, ease: 'power2.out' });
+        }, 1200);
       },
       onError: (error) => {
         activeCancelHelper = null;
+        btnDownloadStart.disabled = false;
+        btnDownloadStart.innerHTML = originalDownloadBtnHtml;
+        if (window.lucide) window.lucide.createIcons();
         showToast(error.message || 'Conversion failed. Please try again.', 'error');
         
-        // Re-open preview card
-        gsap.to(downloadProgressCard, {
-          opacity: 0,
-          y: -15,
-          duration: 0.25,
-          onComplete: () => {
-            downloadProgressCard.classList.add('hidden');
-            mediaPreviewCard.classList.remove('hidden');
-            gsap.to(mediaPreviewCard, { opacity: 1, y: 0, duration: 0.3 });
-          }
-        });
+        // Re-open preview card quickly
+        downloadProgressCard.classList.add('hidden');
+        mediaPreviewCard.classList.remove('hidden');
+        gsap.fromTo(mediaPreviewCard, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.18, ease: 'power2.out' });
       }
     });
 
   } catch (error) {
+    btnDownloadStart.disabled = false;
+    btnDownloadStart.innerHTML = originalDownloadBtnHtml;
+    if (window.lucide) window.lucide.createIcons();
     showToast(error.message || 'Failed to start conversion pipeline.', 'error');
     
     // Return back to preview state on failure
-    gsap.to(downloadProgressCard, {
-      opacity: 0,
-      onComplete: () => {
-        downloadProgressCard.classList.add('hidden');
-        mediaPreviewCard.classList.remove('hidden');
-        gsap.to(mediaPreviewCard, { opacity: 1, y: 0, duration: 0.3 });
-      }
-    });
+    downloadProgressCard.classList.add('hidden');
+    mediaPreviewCard.classList.remove('hidden');
+    gsap.fromTo(mediaPreviewCard, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.18, ease: 'power2.out' });
   }
 });
 
@@ -496,12 +467,11 @@ const initApp = () => {
   // Set up header / hero entry GSAP animations
   if (window.gsap) {
     try {
-      gsap.from('header', { opacity: 0, y: -20, duration: 0.8, ease: 'power2.out' });
-      
-      gsap.from('.hero-title', { opacity: 0, y: 30, duration: 0.8, ease: 'power3.out' });
-      gsap.from('.hero-subtitle', { opacity: 0, y: 20, duration: 0.6, ease: 'power2.out', delay: 0.15 });
-      gsap.from('.url-input-wrapper', { opacity: 0, y: 20, duration: 0.6, ease: 'power2.out', delay: 0.3 });
-      gsap.from('.platforms-badges', { opacity: 0, duration: 0.5, delay: 0.45 });
+      gsap.from('header', { opacity: 0, y: -10, duration: 0.35, ease: 'power2.out' });
+      gsap.from('.hero-title', { opacity: 0, y: 15, duration: 0.35, ease: 'power2.out' });
+      gsap.from('.hero-subtitle', { opacity: 0, y: 10, duration: 0.3, ease: 'power2.out', delay: 0.05 });
+      gsap.from('.url-input-wrapper', { opacity: 0, y: 10, duration: 0.3, ease: 'power2.out', delay: 0.1 });
+      gsap.from('.platforms-badges', { opacity: 0, duration: 0.25, delay: 0.15 });
     } catch (e) {
       console.warn('GSAP animation failed, applying fallback opacity:', e);
       document.querySelectorAll('header, .hero-title, .hero-subtitle, .url-input-wrapper, .platforms-badges')

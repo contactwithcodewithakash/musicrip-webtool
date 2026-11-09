@@ -33,7 +33,7 @@
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="assets/css/style.css?v=1.0.7">
+  <link rel="stylesheet" href="assets/css/style.css?v=2.0.0">
 </head>
 <body>
 
@@ -101,6 +101,9 @@
         <div class="url-input-container">
           <i data-lucide="link" class="input-icon"></i>
           <input type="text" id="url-input" placeholder="Paste Instagram Reel, YouTube link here..." autocomplete="off">
+          <button id="btn-clear-input" class="btn-clear-input hidden" title="Clear input">
+            <i data-lucide="x"></i>
+          </button>
           <button id="btn-paste" class="btn-secondary" title="Paste from clipboard">
             <i data-lucide="clipboard"></i> <span>Paste</span>
           </button>
@@ -109,6 +112,14 @@
           </button>
         </div>
         <p class="input-hint">Supports: YouTube, YouTube Shorts, Instagram Reels, Posts, and Videos</p>
+        
+        <!-- Quick Try Samples -->
+        <div class="quick-samples">
+          <span class="quick-samples-label"><i data-lucide="sparkles" class="micro-icon"></i> Quick Try:</span>
+          <button type="button" class="sample-chip" data-url="https://www.youtube.com/watch?v=kJQP7kiw5Fk">🎵 YouTube Song</button>
+          <button type="button" class="sample-chip" data-url="https://www.youtube.com/shorts/qC_U_7k1iSg">⚡ YouTube Short</button>
+          <button type="button" class="sample-chip" data-url="https://www.instagram.com/reel/C8qL_x2uP1Z/">📸 Instagram Reel</button>
+        </div>
       </div>
 
       <!-- Supported Platforms -->
@@ -411,8 +422,8 @@
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
   <!-- Modular Frontend Scripts -->
-  <script type="module" src="assets/js/api.js?v=1.0.6"></script>
-  <script type="module" src="assets/js/history.js?v=1.0.6"></script>
-  <script type="module" src="assets/js/ui.js?v=1.0.6"></script>
+  <script type="module" src="assets/js/api.js?v=2.0.0"></script>
+  <script type="module" src="assets/js/history.js?v=2.0.0"></script>
+  <script type="module" src="assets/js/ui.js?v=2.0.0"></script>
 </body>
 </html>

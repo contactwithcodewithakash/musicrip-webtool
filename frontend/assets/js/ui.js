@@ -12,6 +12,7 @@ let activeCancelHelper = null;
 
 // DOM Elements
 const urlInput = document.getElementById('url-input');
+const btnClearInput = document.getElementById('btn-clear-input');
 const btnPaste = document.getElementById('btn-paste');
 const btnSubmit = document.getElementById('btn-submit');
 const metadataSkeleton = document.getElementById('metadata-skeleton');
@@ -125,6 +126,7 @@ btnPaste.addEventListener('click', async () => {
     const text = await navigator.clipboard.readText();
     if (text) {
       urlInput.value = text;
+      if (btnClearInput) btnClearInput.classList.remove('hidden');
       showToast('Clipboard link pasted!', 'info');
       // Trigger submission immediately if valid link
       if (isValidUrl(text)) {
@@ -136,6 +138,38 @@ btnPaste.addEventListener('click', async () => {
   } catch (err) {
     showToast('Clipboard access denied. Please paste manually.', 'error');
   }
+});
+
+// URL Input changes
+urlInput.addEventListener('input', () => {
+  if (btnClearInput) {
+    if (urlInput.value.trim().length > 0) {
+      btnClearInput.classList.remove('hidden');
+    } else {
+      btnClearInput.classList.add('hidden');
+    }
+  }
+});
+
+// Clear input button action
+if (btnClearInput) {
+  btnClearInput.addEventListener('click', () => {
+    urlInput.value = '';
+    btnClearInput.classList.add('hidden');
+    urlInput.focus();
+  });
+}
+
+// Quick Try sample chips trigger
+document.querySelectorAll('.sample-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const sampleUrl = chip.getAttribute('data-url');
+    if (sampleUrl) {
+      urlInput.value = sampleUrl;
+      if (btnClearInput) btnClearInput.classList.remove('hidden');
+      analyzeLink(sampleUrl);
+    }
+  });
 });
 
 // URL Input key triggers
